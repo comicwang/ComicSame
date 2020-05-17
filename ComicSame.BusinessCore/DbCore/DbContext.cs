@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using Newtonsoft.Json.Linq;
+
 public class DbContext<T> where T : class, new()
 {
     public DbContext()
@@ -60,6 +62,39 @@ public class DbContext<T> where T : class, new()
     public virtual List<T> GetPageList(Expression<Func<T, bool>> whereExpression, PageModel pageModel)
     {
         return CurrentDb.GetPageList(whereExpression, pageModel);
+    }
+
+    /// <summary>
+    /// 根据表达式查询分页
+    /// </summary>
+    /// <returns></returns>
+    public virtual List<T> GetPageList(List<IConditionalModel> conditionalModels, PageModel pageModel)
+    {
+        return CurrentDb.GetPageList(conditionalModels, pageModel);
+    }
+
+    public virtual List<T> GetPageList(string queryJson, PageModel pageModel)
+    {
+        List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
+        if (!string.IsNullOrEmpty(queryJson))
+        {
+            var condtions = JToken.Parse(queryJson).Children<JProperty>();
+            if (condtions.Any())
+            {
+                List<string> propertyNames = typeof(T).GetProperties().Select(t => t.Name).ToList();
+                foreach (JProperty item in condtions)
+                {
+                    if (propertyNames.Contains(item.Name))
+                        conditionalModels.Add(new ConditionalModel()
+                        {
+                            ConditionalType = ConditionalType.Like,
+                            FieldName = item.Name,
+                            FieldValue = item.Value.ToString()
+                        });
+                }
+            }
+        }
+        return GetPageList(conditionalModels, pageModel);
     }
 
     /// <summary>

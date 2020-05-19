@@ -10,6 +10,7 @@ public class personalfilesManager : DbContext<personalfiles>
     //这里面写的代码不会给覆盖,如果要重新生成请删除 personalfilesManager.cs
 
 
+
     #region 教学方法
     /// <summary>
     /// 如果DbContext中的增删查改方法满足不了你，你可以看下具体用法

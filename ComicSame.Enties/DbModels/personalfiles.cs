@@ -32,7 +32,7 @@ namespace Sugar.Enties
         public string Guid { get; set; }
 
         /// <summary>
-        /// Desc:部门
+        /// Desc:单位
         /// Default:
         /// Nullable:True
         /// </summary>           

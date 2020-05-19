@@ -196,6 +196,7 @@ namespace ComicSame.Api.Controllers
             else
             {
                 Error = "请求参数错误！";
+                throw new ArgumentNullException(typeof(HttpPostedFile).Name);
             }
             return new
             {

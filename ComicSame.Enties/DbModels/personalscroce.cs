@@ -32,14 +32,14 @@ namespace Sugar.Enties
         public string PGuid { get; set; }
 
         /// <summary>
-        /// Desc:科目
+        /// Desc:科目名称（存留原名称）
         /// Default:
         /// Nullable:True
         /// </summary>           
         public string Subject { get; set; }
 
         /// <summary>
-        /// Desc:科目类型
+        /// Desc:科目类型（存留原类别）
         /// Default:
         /// Nullable:True
         /// </summary>           
@@ -53,11 +53,36 @@ namespace Sugar.Enties
         public DateTime? AchieveDate { get; set; }
 
         /// <summary>
+        /// Desc:科目
+        /// Default:
+        /// Nullable:True
+        /// </summary>
+        public string SubjectGuid { get; set; }
+
+        /// <summary>
         /// Desc:得分
         /// Default:
         /// Nullable:True
         /// </summary>           
         public int? Score { get; set; }
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        [SugarColumn(IsIgnore =true)]
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 单位
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string Department { get; set; }
+
+        /// <summary>
+        /// 职务
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string Duty { get; set; }
 
         public void Create()
         {

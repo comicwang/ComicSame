@@ -21,11 +21,9 @@ public class DbContext<T> where T : class, new()
         //调式代码 用来打印SQL 
         Db.Aop.OnLogExecuting = (sql, pars) =>
         {
-            Console.WriteLine(sql + "\r\n" +
+            Log.WriteLog(sql + "\r\n" +
                 Db.Utilities.SerializeObject(pars.ToDictionary(it => it.ParameterName, it => it.Value)));
-            Console.WriteLine();
         };
-
     }
     //注意：不能写成静态的
     public SqlSugarClient Db;//用来处理事务多表查询和复杂的操作
@@ -34,9 +32,10 @@ public class DbContext<T> where T : class, new()
    public SimpleClient<login_user> login_userDb { get { return new SimpleClient<login_user>(Db); } }//用来处理login_user表的常用操作
    public SimpleClient<personalfiles> personalfilesDb { get { return new SimpleClient<personalfiles>(Db); } }//用来处理personalfiles表的常用操作
    public SimpleClient<personalscroce> personalscroceDb { get { return new SimpleClient<personalscroce>(Db); } }//用来处理personalscroce表的常用操作
+    public SimpleClient<dicsubject> dicsubjectDb { get { return new SimpleClient<dicsubject>(Db); } }//用来处理personalscroce表的常用操作
 
 
-   /// <summary>
+    /// <summary>
     /// 获取所有
     /// </summary>
     /// <returns></returns>

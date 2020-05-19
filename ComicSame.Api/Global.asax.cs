@@ -13,5 +13,14 @@ namespace ComicSame.Api
         {
             GlobalConfiguration.Configure(WebApiConfig.Register);
         }
+
+        protected void Application_Error(Object sender, EventArgs e)
+        {
+            if (System.Configuration.ConfigurationManager.AppSettings["logLevel"].ToLower() == "error")
+            {
+                Exception ex = Server.GetLastError().GetBaseException(); //获取异常源 
+                Log.WriteLog(ex.Message, ex);
+            }
+        }
     }
 }

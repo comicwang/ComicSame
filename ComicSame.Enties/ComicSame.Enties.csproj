@@ -53,11 +53,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbModels\dicsubject.cs" />
     <Compile Include="DbModels\personalscroce.cs" />
     <Compile Include="DbModels\personalfiles.cs" />
     <Compile Include="DbModels\login_user.cs" />
-    <Compile Include="ExcelReader.cs" />
-    <Compile Include="LinqExpression.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

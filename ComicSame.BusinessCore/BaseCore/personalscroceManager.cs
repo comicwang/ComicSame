@@ -4,11 +4,72 @@ using System;
 using System.Collections.Generic;
 public class personalscroceManager : DbContext<personalscroce>
 {
- 
+
     //当前类已经继承了 DbContext增、删、查、改的方法
 
     //这里面写的代码不会给覆盖,如果要重新生成请删除 personalscroceManager.cs
 
+    /// <summary>
+    ///查询成绩信息
+    /// </summary>
+    /// <param name="pid"></param>
+    /// <param name="subject"></param>
+    /// <param name="dateBegin"></param>
+    /// <param name="dateEnd"></param>
+    /// <returns></returns>
+    public List<personalscroce> GetPersonalscroces(string pid,string subject,DateTime? dateBegin,DateTime? dateEnd)
+    {
+        var expression = LinqExpression.True<personalscroce>();
+        List<IConditionalModel> conModels = new List<IConditionalModel>();
+        //人员ID
+        if (!string.IsNullOrEmpty(pid))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName= "PGuid",
+                FieldValue=pid,
+                ConditionalType=ConditionalType.Equal
+            });
+            expression = expression.And(t => t.PGuid.Equals(pid));
+        }
+        //科目
+        if (!string.IsNullOrEmpty(subject))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "SubjectName",
+                FieldValue = subject,
+                ConditionalType = ConditionalType.Equal
+            });
+            expression = expression.And(t => t.Subject.Equals(subject));
+        }
+        //考试日期开始
+        if (dateBegin.HasValue)
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "AchieveDate",
+                FieldValue = dateBegin.Value.ToString("yyyy-MM-dd"),
+                ConditionalType = ConditionalType.GreaterThanOrEqual,
+                FieldValueConvertFunc = t => { return DateTime.Parse(t); }
+            });
+            expression = expression.And(t => t.AchieveDate.Value >= dateBegin);
+        }
+        //考试日期结束
+        if (dateEnd.HasValue)
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "AchieveDate",
+                FieldValue = dateEnd.Value.ToString("yyyy-MM-dd"),
+                ConditionalType = ConditionalType.LessThanOrEqual,
+                FieldValueConvertFunc = t => { return DateTime.Parse(t); }
+            });
+            expression = expression.And(t => t.AchieveDate.Value >= dateEnd);
+        }
+
+        return Db.Queryable<personalscroce, personalfiles,dicsubject>((t1, t2,t3) => t1.PGuid == t2.Guid&&t3.Guid==t1.SubjectGuid).Where(conModels).OrderBy((t1, t2,t3) => new { t2.Name, t1.AchieveDate }, OrderByType.Asc).Select((t1, t2,t3) => new personalscroce { AchieveDate = t1.AchieveDate, Guid = t1.Guid, PGuid = t1.PGuid, Subject = t3.SubjectName, Score = t1.Score, SubjectType = t3.SubType, Name = t2.Name,SubjectGuid=t3.Guid,Department=t2.Department,Duty=t2.Duty }).ToList();
+    }
 
     #region 教学方法
     /// <summary>

@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseCore\dicsubjectManager.cs" />
     <Compile Include="BaseCore\personalscroceManager.cs" />
     <Compile Include="BaseCore\personalfilesManager.cs" />
     <Compile Include="BaseCore\login_userManager.cs" />
@@ -71,6 +72,10 @@
     <ProjectReference Include="..\ComicSame.Enties\ComicSame.Enties.csproj">
       <Name>ComicSame.Enties</Name>
       <Project>{6f39924a-80f0-4641-af71-fd55394568bd}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\ComicSame.Utility\ComicSame.Utility.csproj">
+      <Project>{f6a0209c-963e-40be-9093-83c9b4a1ac2d}</Project>
+      <Name>ComicSame.Utility</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

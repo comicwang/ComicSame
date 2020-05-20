@@ -162,9 +162,13 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Base\WebApiBase.cs" />
     <Compile Include="App_Start\SwaggerConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Attr\RequestAuthorizeAttribute.cs" />
     <Compile Include="Attr\ExceptionHandlingAttribute .cs" />
+    <Compile Include="Controllers\ssoController.cs" />
+    <Compile Include="Controllers\personalAnalysisController.cs" />
     <Compile Include="Controllers\dicsubjectController.cs" />
     <Compile Include="Controllers\PersonalscroceController.cs" />
     <Compile Include="Controllers\PersonalfilesController.cs" />
@@ -197,6 +201,10 @@
     <ProjectReference Include="..\ComicSame.Enties\ComicSame.Enties.csproj">
       <Project>{6f39924a-80f0-4641-af71-fd55394568bd}</Project>
       <Name>ComicSame.Enties</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ComicSame.SSO\ComicSame.SSO.csproj">
+      <Project>{8e0d95a4-4c3c-4637-92c0-aa1bb80d5a69}</Project>
+      <Name>ComicSame.SSO</Name>
     </ProjectReference>
     <ProjectReference Include="..\ComicSame.Utility\ComicSame.Utility.csproj">
       <Project>{f6a0209c-963e-40be-9093-83c9b4a1ac2d}</Project>

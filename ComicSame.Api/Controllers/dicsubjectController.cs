@@ -17,7 +17,7 @@ namespace ComicSame.Api.Controllers
     /// <summary>
     /// 科目类别管理接口Api
     /// </summary>
-    public class dicsubjectController : ApiController
+    public class dicsubjectController : WebApiControllerBase
     {
         private static dicsubjectManager dicsubjectManager = new dicsubjectManager();
 

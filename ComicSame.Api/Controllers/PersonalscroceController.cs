@@ -17,7 +17,7 @@ namespace ComicSame.Api.Controllers
     /// <summary>
     /// 人员信息管理接口Api
     /// </summary>
-    public class PersonalscroceController : ApiController
+    public class PersonalscroceController : WebApiControllerBase
     {
         private static personalscroceManager personalscroceManager = new personalscroceManager();
         private static personalfilesManager personalfilesManager = new personalfilesManager();

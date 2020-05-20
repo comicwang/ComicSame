@@ -17,7 +17,7 @@ namespace ComicSame.Api.Controllers
     /// <summary>
     /// 人员信息管理接口Api
     /// </summary>
-    public class PersonalfilesController : ApiController
+    public class PersonalfilesController : WebApiControllerBase
     {
         private static personalfilesManager personalfilesManager = new personalfilesManager();
 
@@ -36,6 +36,17 @@ namespace ComicSame.Api.Controllers
                 dto.Height = 1 + random.Next(6, 9) * 0.1 + random.Next(0, 9) * 0.01;
             }
             return personalfilesManager.Insert(dto);
+        }
+
+        /// <summary>
+        /// 根据ID查询个人信息
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public personalfiles GetById(string guid)
+        {
+            return personalfilesManager.GetById(guid);
         }
 
         /// <summary>

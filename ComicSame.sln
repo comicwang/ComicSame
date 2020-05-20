@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicSame.Api", "ComicSame.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicSame.Utility", "ComicSame.Utility\ComicSame.Utility.csproj", "{F6A0209C-963E-40BE-9093-83C9B4A1AC2D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComicSame.SSO", "ComicSame.SSO\ComicSame.SSO.csproj", "{8E0D95A4-4C3C-4637-92C0-AA1BB80D5A69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F6A0209C-963E-40BE-9093-83C9B4A1AC2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6A0209C-963E-40BE-9093-83C9B4A1AC2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6A0209C-963E-40BE-9093-83C9B4A1AC2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E0D95A4-4C3C-4637-92C0-AA1BB80D5A69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E0D95A4-4C3C-4637-92C0-AA1BB80D5A69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E0D95A4-4C3C-4637-92C0-AA1BB80D5A69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E0D95A4-4C3C-4637-92C0-AA1BB80D5A69}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

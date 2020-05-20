@@ -2,6 +2,9 @@ using System.Web.Http;
 using WebActivatorEx;
 using ComicSame.Api;
 using Swashbuckle.Application;
+using Swashbuckle.Swagger;
+using System.Collections.Generic;
+using System.Linq;
 
 [assembly: PreApplicationStartMethod(typeof(SwaggerConfig), "Register")]
 
@@ -102,6 +105,7 @@ namespace ComicSame.Api
                         // more Xml comment files.
                         //
                         c.IncludeXmlComments(GetXmlCommentsPath(thisAssembly.GetName().Name));
+                        c.OperationFilter<AddAuthTokenHeaderParameter>();
 
                         // Swashbuckle makes a best attempt at generating Swagger compliant JSON schemas for the various types
                         // exposed in your API. However, there may be occasions when more control of the output is needed.
@@ -255,6 +259,35 @@ namespace ComicSame.Api
         protected static string GetXmlCommentsPath(string name)
         {
             return System.String.Format(@"{0}\bin\{1}.xml", System.AppDomain.CurrentDomain.BaseDirectory, name);
+        }
+
+        public class AddAuthTokenHeaderParameter : IOperationFilter
+        {
+            public void Apply(Operation operation, SchemaRegistry schemaRegistry, System.Web.Http.Description.ApiDescription apiDescription)
+            {
+                if (operation.parameters == null)
+                {
+                    operation.parameters = new List<Parameter>();
+                }
+                if (System.Configuration.ConfigurationManager.AppSettings["tokenAuth"].ToLower() == "false")
+                {
+                    return;
+                }
+                var attributesA = apiDescription.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().OfType<AllowAnonymousAttribute>();
+                bool isAnonymousA = attributesA.Any(a => a is AllowAnonymousAttribute);
+                if (isAnonymousA)
+                {
+                    return;
+                }
+                operation.parameters.Add(new Parameter()
+                {
+                    name = "Authorization",
+                    @in = "header",
+                    type = "string",
+                    description = "token认证信息",
+                    required = true
+                });
+            }
         }
     }
 }

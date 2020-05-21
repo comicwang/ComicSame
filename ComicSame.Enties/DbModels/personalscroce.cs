@@ -84,6 +84,42 @@ namespace Sugar.Enties
         [SugarColumn(IsIgnore = true)]
         public string Duty { get; set; }
 
+        /// <summary>
+        /// 评定
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public string Evaluate { get; set; }
+
+        /// <summary>
+        /// 排名
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public int Rank { get; set; }
+
+        /// <summary>
+        /// 单次进步分数
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public int CurrentProScore { get; set; }
+
+        /// <summary>
+        /// 单次进步名次
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public int CurrentProRank { get; set; }
+
+        /// <summary>
+        /// 年度进步分数
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public int YearProScore { get; set; }
+
+        /// <summary>
+        /// 年度进步名次
+        /// </summary>
+        [SugarColumn(IsIgnore = true)]
+        public int YearProRank { get; set; }
+
         public void Create()
         {
             this.Guid = System.Guid.NewGuid().ToString();

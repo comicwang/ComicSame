@@ -20,7 +20,8 @@ namespace ComicSame.Api
             //从http请求的头里面获取身份验证信息，验证是否是请求发起方的ticket
             if (System.Configuration.ConfigurationManager.AppSettings["tokenAuth"].ToLower()=="false")
             {
-                base.OnAuthorization(actionContext);
+                base.IsAuthorized(actionContext);
+                return;
             }
 
             var attributesA = actionContext.ActionDescriptor.GetCustomAttributes<AllowAnonymousAttribute>().OfType<AllowAnonymousAttribute>();
@@ -29,7 +30,8 @@ namespace ComicSame.Api
             bool isAnonymousC = attributesC.Any(a => a is AllowAnonymousAttribute);
             if (isAnonymousA || isAnonymousC)
             {
-                base.OnAuthorization(actionContext);
+                base.IsAuthorized(actionContext);
+                return;
             }
             else
             {

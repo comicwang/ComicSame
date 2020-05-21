@@ -171,6 +171,24 @@ namespace Sugar.Enties
         /// </summary>           
         public DateTime? ModyfiedDate { get; set; }
 
+        /// <summary>
+        /// Desc:旅
+        /// Default:
+        /// Nullable:True
+        public string Brigade { get; set; }
+
+        /// <summary>
+        /// Desc:营
+        /// Default:
+        /// Nullable:True
+        public string Camp { get; set; }
+
+        /// <summary>
+        /// Desc:连
+        /// Default:
+        /// Nullable:True
+        public string Even { get; set; }
+
 
         public void Create()
         {

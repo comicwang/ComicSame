@@ -107,8 +107,8 @@ namespace ComicSame.Api.Controllers
             keyValuePairs.Add("耐力", endurance);
             keyValuePairs.Add("柔韧性", flexibility);
 
-            string advanceSubject = keyValuePairs.Where(t => t.Value == keyValuePairs.Max(t => t.Value)).Select(t => t.Key).FirstOrDefault();
-            string weakSubject = keyValuePairs.Where(t => t.Value == keyValuePairs.Min(t => t.Value)).Select(t => t.Key).FirstOrDefault();
+            string advanceSubject = keyValuePairs.Where(t => t.Value == keyValuePairs.Max(g => g.Value)).Select(t => t.Key).FirstOrDefault();
+            string weakSubject = keyValuePairs.Where(t => t.Value == keyValuePairs.Min(g => g.Value)).Select(t => t.Key).FirstOrDefault();
 
 
             return new 

@@ -45,19 +45,19 @@ namespace ComicSame.Api.Controllers
             var person= personalfilesManager.GetList();
             List<DateTime> dates = new List<DateTime>()
             { 
-               new DateTime(2018,1,2),
-               new DateTime(2018,1,8),
-               new DateTime(2018,1,15),
-               new DateTime(2018,1,17),
-               new DateTime(2018,1,25),
-               new DateTime(2018,2,3),
-               new DateTime(2018,2,8),
-               new DateTime(2018,2,13),
-               new DateTime(2018,2,25),
-               new DateTime(2018,2,28),
-               new DateTime(2018,3,5),
-               new DateTime(2018,3,9),
-               new DateTime(2018,3,18)
+               new DateTime(2020,1,2),
+               new DateTime(2020,1,8),
+               new DateTime(2020,1,15),
+               new DateTime(2020,1,17),
+               new DateTime(2020,1,25),
+               new DateTime(2020,2,3),
+               new DateTime(2020,2,8),
+               new DateTime(2020,2,13),
+               new DateTime(2020,2,25),
+               new DateTime(2020,2,28),
+               new DateTime(2020,3,5),
+               new DateTime(2020,3,9),
+               new DateTime(2020,3,18)
             };
             List<dicsubject> subjects = dicsubjectManager.GetList();
            
@@ -88,17 +88,53 @@ namespace ComicSame.Api.Controllers
         }
 
         /// <summary>
+        /// 获取最近一次的考试时间
+        /// 用于初始化成绩查询结束时间（开始时间为结束时间当年的1月1日）
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public DateTime? GetLatestAchiveDate()
+        {
+            return personalscroceManager.CurrentDb.AsQueryable().OrderBy(t => t.AchieveDate,OrderByType.Desc).Select(t => t.AchieveDate).First();
+        }
+
+        /// <summary>
         /// 查询成绩信息
         /// </summary>
+        /// <param name="department">机构名称</param>
+        /// <param name="name">人员名称</param>
         /// <param name="pid">人员ID（不传不筛选）</param>
         /// <param name="subject">科目信息</param>
         /// <param name="dateBegin">考试开始时间</param>
         /// <param name="dateEnd">考试结束时间</param>
         /// <returns></returns>
         [HttpGet]
-        public List<personalscroce> GetScroces(string pid, string subject, DateTime? dateBegin, DateTime? dateEnd)
+        public object GetScroces(string subject, DateTime? dateBegin, DateTime? dateEnd,string department=null, string name=null, string pid=null)
         {
-            return personalscroceManager.GetPersonalscroces(pid, subject, dateBegin, dateEnd);
+            List<personalscroce> result= personalscroceManager.GetPersonalscroces(department,name,pid, subject, dateBegin, dateEnd);
+            return result.GroupBy(t => new { t.Name, t.Department, t.Duty }).Select(t => new { Name = t.Key, Value = t.GroupBy(g => g.AchieveDate).Select(l => new { Date = l.Key, Score = l.FirstOrDefault().Score }) });
+        }
+
+        /// <summary>
+        /// 分页查询成绩
+        /// </summary>
+        /// <param name="pageModel"></param>
+        /// <param name="subject"></param>
+        /// <param name="dateBegin"></param>
+        /// <param name="dateEnd"></param>
+        /// <param name="department"></param>
+        /// <param name="name"></param>
+        /// <param name="pid"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public object GetPageScroces([FromUri]PageModel pageModel,string subject, DateTime? dateBegin, DateTime? dateEnd, string department = null, string name = null, string pid = null)
+        {
+            var result= personalscroceManager.GetPagePersonalscroces(pageModel,department, name, pid, subject, dateBegin, dateEnd);
+            return new
+            {
+                data = result,
+                pageModel = pageModel
+            };
         }
 
         /// <summary>
@@ -112,13 +148,36 @@ namespace ComicSame.Api.Controllers
         }
 
         /// <summary>
+        /// 删除分数信息
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public bool Delete(string guid)
+        {
+            return personalscroceManager.Delete(guid);
+        }
+
+        /// <summary>
         /// 新增或者更新成绩信息
         /// </summary>
         /// <param name="personalscroce"></param>
         /// <returns></returns>
         [HttpPost]
-        public bool Save(personalscroce personalscroce)
+        public object Save(personalscroce personalscroce)
         {
+            if (personalscroce == null || string.IsNullOrEmpty(personalscroce.PGuid) || string.IsNullOrEmpty(personalscroce.SubjectGuid) || personalscroce.AchieveDate.HasValue == false)
+            {
+                return "成绩信息不完整，录入失败";
+            }
+
+            var temp = personalscroceManager.CurrentDb.AsQueryable().Where(t => t.SubjectGuid == personalscroce.SubjectGuid && t.AchieveDate == personalscroce.AchieveDate && t.PGuid == personalscroce.PGuid).First();
+            if (temp!=null)
+            {
+                temp.Score = personalscroce.Score;
+                return personalscroceManager.Update(temp);
+            }
+
             if (string.IsNullOrEmpty(personalscroce.Guid))
             {
                 personalscroce.Create();

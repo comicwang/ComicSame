@@ -49,6 +49,11 @@ namespace ComicSame.Api
         {
             return new WebApiResult { type = ResultType.error, message = message };
         }
+
+        public string Options()
+        {
+            return null;
+        }
     }
 
     /// <summary>

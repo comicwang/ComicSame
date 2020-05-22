@@ -50,13 +50,18 @@ namespace ComicSame.Api.Controllers
         }
 
         /// <summary>
-        /// 查询所有个人信息
+        /// 根据名称模糊查询个人信息
         /// </summary>
-        /// <returns></returns>
+        /// <param name="name">名称</param>
+        /// <returns>个人信息（返回名称和guid）</returns>
         [HttpGet]
-        public List<personalfiles> GetAll()
+        public List<personalfiles> GetList(string name)
         {
-           return personalfilesManager.GetList();
+            return personalfilesManager.CurrentDb.AsQueryable().Where(t=>t.Name.Contains(name)).Select(t => new personalfiles()
+            {
+                Guid = t.Guid,
+                Name = t.Name
+            }).ToList();
         }
 
         /// <summary>
@@ -214,6 +219,38 @@ namespace ComicSame.Api.Controllers
                 Message = Message,
                 Error = Error
             };
+        }
+
+        /// <summary>
+        /// 删除个人信息
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public bool Delete(string guid)
+        {
+            return personalfilesManager.Delete(guid);
+        }
+
+        /// <summary>
+        /// 获取所有单位列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public List<string> GetDepartList()
+        {
+           return personalfilesManager.CurrentDb.AsQueryable().GroupBy(t => t.Department).Select(t => t.Department).ToList();
+        }
+
+        /// <summary>
+        /// 根据部门名称（全匹配）获取部门级别信息
+        /// </summary>
+        /// <param name="department"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public List<string> GetLevelByDepartment(string department)
+        {
+            return personalfilesManager.CurrentDb.AsQueryable().GroupBy(t => t.Level).Where(t => t.Department == department).Select(t => t.Level).ToList();
         }
     }
 }

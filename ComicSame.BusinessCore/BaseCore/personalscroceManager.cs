@@ -10,14 +10,16 @@ public class personalscroceManager : DbContext<personalscroce>
     //这里面写的代码不会给覆盖,如果要重新生成请删除 personalscroceManager.cs
 
     /// <summary>
-    ///查询成绩信息
+    /// 查询成绩信息
     /// </summary>
+    /// <param name="department"></param>
+    /// <param name="name"></param>
     /// <param name="pid"></param>
     /// <param name="subject"></param>
     /// <param name="dateBegin"></param>
     /// <param name="dateEnd"></param>
     /// <returns></returns>
-    public List<personalscroce> GetPersonalscroces(string pid,string subject,DateTime? dateBegin,DateTime? dateEnd)
+    public List<personalscroce> GetPersonalscroces(string department,string name,string pid,string subject,DateTime? dateBegin,DateTime? dateEnd)
     {
         var expression = LinqExpression.True<personalscroce>();
         List<IConditionalModel> conModels = new List<IConditionalModel>();
@@ -32,12 +34,45 @@ public class personalscroceManager : DbContext<personalscroce>
             });
             expression = expression.And(t => t.PGuid.Equals(pid));
         }
-        //科目
+        //人员名称
+        if (!string.IsNullOrEmpty(name))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "Name",
+                FieldValue = name,
+                ConditionalType = ConditionalType.Like
+            });
+            expression = expression.And(t => t.PGuid.Equals(pid));
+        }
+        //单位
+        if (!string.IsNullOrEmpty(department))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "Department",
+                FieldValue = department,
+                ConditionalType = ConditionalType.Like
+            });
+            expression = expression.And(t => t.PGuid.Equals(pid));
+        }
+        //人员ID
+        if (!string.IsNullOrEmpty(pid))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "PGuid",
+                FieldValue = pid,
+                ConditionalType = ConditionalType.Equal
+            });
+            expression = expression.And(t => t.PGuid.Equals(pid));
+        }
+        //科目GUID
         if (!string.IsNullOrEmpty(subject))
         {
             conModels.Add(new ConditionalModel()
             {
-                FieldName = "SubjectName",
+                FieldName = "SubjectGuid",
                 FieldValue = subject,
                 ConditionalType = ConditionalType.Equal
             });
@@ -69,6 +104,105 @@ public class personalscroceManager : DbContext<personalscroce>
         }
 
         return Db.Queryable<personalscroce, personalfiles,dicsubject>((t1, t2,t3) => t1.PGuid == t2.Guid&&t3.Guid==t1.SubjectGuid).Where(conModels).OrderBy((t1, t2,t3) => new { t2.Name, t1.AchieveDate }, OrderByType.Asc).Select((t1, t2,t3) => new personalscroce { AchieveDate = t1.AchieveDate, Guid = t1.Guid, PGuid = t1.PGuid, Subject = t3.SubjectName, Score = t1.Score, SubjectType = t3.SubType, Name = t2.Name,SubjectGuid=t3.Guid,Department=t2.Department,Duty=t2.Duty }).ToList();
+    }
+
+    /// <summary>
+    /// 查询成绩信息
+    /// </summary>
+    /// <param name="department"></param>
+    /// <param name="name"></param>
+    /// <param name="pid"></param>
+    /// <param name="subject"></param>
+    /// <param name="dateBegin"></param>
+    /// <param name="dateEnd"></param>
+    /// <returns></returns>
+    public List<personalscroce> GetPagePersonalscroces(PageModel pageModel,string department, string name, string pid, string subject, DateTime? dateBegin, DateTime? dateEnd)
+    {
+        var expression = LinqExpression.True<personalscroce>();
+        List<IConditionalModel> conModels = new List<IConditionalModel>();
+        //人员ID
+        if (!string.IsNullOrEmpty(pid))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "PGuid",
+                FieldValue = pid,
+                ConditionalType = ConditionalType.Equal
+            });
+            expression = expression.And(t => t.PGuid.Equals(pid));
+        }
+        //人员名称
+        if (!string.IsNullOrEmpty(name))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "Name",
+                FieldValue = name,
+                ConditionalType = ConditionalType.Like
+            });
+            expression = expression.And(t => t.PGuid.Equals(pid));
+        }
+        //单位
+        if (!string.IsNullOrEmpty(department))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "Department",
+                FieldValue = department,
+                ConditionalType = ConditionalType.Like
+            });
+            expression = expression.And(t => t.PGuid.Equals(pid));
+        }
+        //人员ID
+        if (!string.IsNullOrEmpty(pid))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "PGuid",
+                FieldValue = pid,
+                ConditionalType = ConditionalType.Equal
+            });
+            expression = expression.And(t => t.PGuid.Equals(pid));
+        }
+        //科目GUID
+        if (!string.IsNullOrEmpty(subject))
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "SubjectGuid",
+                FieldValue = subject,
+                ConditionalType = ConditionalType.Equal
+            });
+            expression = expression.And(t => t.Subject.Equals(subject));
+        }
+        //考试日期开始
+        if (dateBegin.HasValue)
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "AchieveDate",
+                FieldValue = dateBegin.Value.ToString("yyyy-MM-dd"),
+                ConditionalType = ConditionalType.GreaterThanOrEqual,
+                FieldValueConvertFunc = t => { return DateTime.Parse(t); }
+            });
+            expression = expression.And(t => t.AchieveDate.Value >= dateBegin);
+        }
+        //考试日期结束
+        if (dateEnd.HasValue)
+        {
+            conModels.Add(new ConditionalModel()
+            {
+                FieldName = "AchieveDate",
+                FieldValue = dateEnd.Value.ToString("yyyy-MM-dd"),
+                ConditionalType = ConditionalType.LessThanOrEqual,
+                FieldValueConvertFunc = t => { return DateTime.Parse(t); }
+            });
+            expression = expression.And(t => t.AchieveDate.Value >= dateEnd);
+        }
+        int pageCount = 0;
+        var result= Db.Queryable<personalscroce, personalfiles, dicsubject>((t1, t2, t3) => t1.PGuid == t2.Guid && t3.Guid == t1.SubjectGuid).Where(conModels).OrderBy((t1, t2, t3) => new { t2.Name, t1.AchieveDate }, OrderByType.Asc).Select((t1, t2, t3) => new personalscroce { AchieveDate = t1.AchieveDate, Guid = t1.Guid, PGuid = t1.PGuid, Subject = t3.SubjectName, Score = t1.Score, SubjectType = t3.SubType, Name = t2.Name, SubjectGuid = t3.Guid, Department = t2.Department, Duty = t2.Duty }).ToPageList(pageModel.PageIndex,pageModel.PageSize,ref pageCount);
+        pageModel.PageCount = pageCount;
+        return result;
     }
 
     #region 教学方法

@@ -72,11 +72,11 @@ namespace ComicSame.Api.Controllers
             return new
             {
                 pInfo = pInfo,  //个人信息
-                speed =Math.Round(speed,0),  //速度
-                power = Math.Round(power, 0),  //力量
-                sensitivity = Math.Round(sensitivity, 0), //灵敏度
-                endurance = Math.Round(endurance, 0), //耐力
-                flexibility = Math.Round(flexibility, 0),  //柔韧性
+                speed =Math.Round(speed,1),  //速度
+                power = Math.Round(power, 1),  //力量
+                sensitivity = Math.Round(sensitivity, 1), //灵敏度
+                endurance = Math.Round(endurance, 1), //耐力
+                flexibility = Math.Round(flexibility, 1),  //柔韧性
                 fightCapacity = Math.Round(fightCapacity, 0),  //塔山战力
                 promoteCapacity = Math.Round(promoteCapacity, 0), //提示潜力
                 grow = Math.Round(grow, 0), //成长值
@@ -185,7 +185,7 @@ namespace ComicSame.Api.Controllers
                 Level = Level, //级别
                 maxScore = maxScore, //个人最佳成绩
                 weakSubject = weakSubject, //个人弱科项目
-                weakScore = weakScore, //个人弱科项目均分
+                weakScore =Math.Round(weakScore,1), //个人弱科项目均分
                 sportSuggest = sportSuggest, //运动建议
                 eatSuggest = eatSuggest //饮食建议
             };

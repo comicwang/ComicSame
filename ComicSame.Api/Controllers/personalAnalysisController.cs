@@ -197,6 +197,7 @@ namespace ComicSame.Api.Controllers
         /// <param name="pguid">个人guid</param>
         /// <param name="subguid">科目guid</param>
         /// <returns></returns>
+        [HttpGet]
         public object GetSportRecord(string pguid, string subguid)
         {
             var pInfo = personalfilesManager.GetById(pguid);
@@ -213,7 +214,7 @@ namespace ComicSame.Api.Controllers
             string whersql = $"and t1.Brigade='{pInfo.Brigade}' and t.SubjectGuid='{subguid}' and t.AchieveDate >= '{dateTimes.Min().Value.Year}-1-1' and t.AchieveDate <= '{dateTimes.Max().Value.Year}-12-31'";
             string sumsql = $"select PGuid,MAX(Score) as Score from (select g.PGuid as PGuid,g.AchieveDate as AchieveDate,Sum(g.Score) as Score from (select t.PGuid,t.Score,t.AchieveDate from personalscroce t JOIN personalfiles t1 ON t.PGuid=t1.Guid {whersql}) g GROUP BY g.PGuid,g.AchieveDate) s GROUP BY PGuid ORDER BY Score desc";
             int firstBrigadeRank = personalscroceManager.Db.Ado.GetInt($"SELECT Rank from (SELECT PGuid,Score,(SELECT COUNT(DISTINCT Score) from ({sumsql}) m where m.Score>=l.Score) Rank from ({sumsql}) l) k WHERE PGuid='{pguid}'");
-
+            personalfilesManager.Db.Ado.Connection.Close();
             foreach (var date in dateTimes)
             {
                 var temp = scoreInfo.Where(t => t.AchieveDate.Value == date.Value).FirstOrDefault();
@@ -234,6 +235,7 @@ namespace ComicSame.Api.Controllers
                     //旅排名
                     int BrigadeRank = personalscroceManager.Db.Ado.GetInt($"SELECT Rank from (SELECT PGuid,Score,(SELECT COUNT(DISTINCT Score) from ({sumsql}) m where m.Score>=l.Score) Rank from ({sumsql}) l) k WHERE PGuid='{pguid}'");
                     temp.Rank = BrigadeRank;
+                    personalfilesManager.Db.Ado.Connection.Close();
                 }
                 temp.Evaluate = GetEvaluate(temp.Score.Value);  //评定
                 temp.YearProScore = temp.Score.Value - firstScore; //年度进步分数

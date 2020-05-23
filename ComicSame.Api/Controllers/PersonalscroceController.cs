@@ -19,9 +19,9 @@ namespace ComicSame.Api.Controllers
     /// </summary>
     public class PersonalscroceController : WebApiControllerBase
     {
-        private static personalscroceManager personalscroceManager = new personalscroceManager();
-        private static personalfilesManager personalfilesManager = new personalfilesManager();
-        private static dicsubjectManager dicsubjectManager = new dicsubjectManager();
+        private personalscroceManager personalscroceManager = new personalscroceManager();
+        private personalfilesManager personalfilesManager = new personalfilesManager();
+        private dicsubjectManager dicsubjectManager = new dicsubjectManager();
 
         /// <summary>
         /// 插入个人成绩信息

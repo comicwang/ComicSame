@@ -19,7 +19,7 @@ namespace ComicSame.Api.Controllers
     /// </summary>
     public class dicsubjectController : WebApiControllerBase
     {
-        private static dicsubjectManager dicsubjectManager = new dicsubjectManager();
+        private  dicsubjectManager dicsubjectManager = new dicsubjectManager();
 
         /// <summary>
         /// 插入科目字典信息

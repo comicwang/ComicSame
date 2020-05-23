@@ -19,7 +19,7 @@ namespace ComicSame.Api.Controllers
     /// </summary>
     public class PersonalfilesController : WebApiControllerBase
     {
-        private static personalfilesManager personalfilesManager = new personalfilesManager();
+        private personalfilesManager personalfilesManager = new personalfilesManager();
 
         /// <summary>
         /// 插入个人信息

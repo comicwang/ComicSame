@@ -16,9 +16,9 @@ namespace ComicSame.Api.Controllers
     /// </summary>
     public class departmentAnalysisController : WebApiControllerBase
     {
-        private static dicsubjectManager dicsubjectManager = new dicsubjectManager();
-        private static personalscroceManager personalscroceManager = new personalscroceManager();
-        private static personalfilesManager personalfilesManager = new personalfilesManager();
+        private dicsubjectManager dicsubjectManager = new dicsubjectManager();
+        private personalscroceManager personalscroceManager = new personalscroceManager();
+        private personalfilesManager personalfilesManager = new personalfilesManager();
 
         /// <summary>
         /// 获取该部门的综合实力指标

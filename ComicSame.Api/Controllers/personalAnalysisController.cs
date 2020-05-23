@@ -251,6 +251,17 @@ namespace ComicSame.Api.Controllers
         }
 
         /// <summary>
+        /// 获取个人单科目成绩信息
+        /// </summary>
+        /// <param name="pguid"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public object GetSubjectAchive(string pguid)
+        {
+            return personalscroceManager.Db.Queryable<personalscroce, dicsubject>((t1, t2) => t1.SubjectGuid == t2.Guid).GroupBy((t1, t2) => new { t2.SubjectName }).Select((t1, t2) => new { Subject = t2.SubjectName, Score = SqlFunc.AggregateAvg((double)t1.Score) }).ToList();
+        }
+
+        /// <summary>
         /// 获取评定
         /// </summary>
         /// <param name="score"></param>

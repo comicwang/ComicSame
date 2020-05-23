@@ -114,14 +114,55 @@ namespace ComicSame.Api.Controllers
             return new 
             { 
                 data=jArray,
-                power= power,
-                speed = speed,
-                sensitivity = sensitivity,
-                endurance = endurance,
-                flexibility = flexibility,
+                power=Math.Round(power,1),
+                speed =Math.Round(speed,1),
+                sensitivity =Math.Round(sensitivity,1),
+                endurance =Math.Round(endurance,1),
+                flexibility = Math.Round(flexibility,1),
                 advanceSubject = advanceSubject,
                 weakSubject = weakSubject
             };
+        }
+
+        /// <summary>
+        /// 获取成绩分布表
+        /// </summary>
+        /// <param name="department"></param>
+        /// <param name="Level"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public object GetSubjectDistribution(string department,string Level)
+        {
+            int flag = 0;
+            JArray jArray = new JArray();
+            for (int i = 0; i < 5; i++)
+            {
+                var temp = personalscroceManager.Db.Queryable<personalscroce, dicsubject, personalfiles>((t1, t2, t3) => t1.SubjectGuid == t2.Guid && t1.PGuid == t3.Guid).WhereIF(!string.IsNullOrEmpty(department), (t1, t2, t3) => t3.Department == department).WhereIF(!string.IsNullOrEmpty(Level), (t1, t2, t3) => t3.Level == Level).WhereIF(flag == 0, t1 => t1.Score > 0 && t1.Score < 60).WhereIF(flag == 1, t1 => t1.Score >= 60 && t1.Score < 70).WhereIF(flag == 2, t1 => t1.Score >= 70 && t1.Score < 80).WhereIF(flag == 3, t1 => t1.Score >= 80 && t1.Score < 90).WhereIF(flag == 4, t1 => t1.Score >= 90 && t1.Score <= 100).GroupBy(t1 => t1.SubjectGuid).Select((t1, t2, t3) => new { SubjectName = t2.SubjectName, Count = SqlFunc.AggregateCount(t1.Score), Flag = flag }).ToList();
+                foreach (var item in temp)
+                {
+                    JObject jObject = new JObject();
+                    jObject["SubjectName"] = item.SubjectName;
+                    jObject["Count"] = item.Count;
+                    jObject["Flag"] = item.Flag;
+                    jArray.Add(jObject);
+                }
+                flag++;
+            }           
+            return jArray.GroupBy(t=>t["Flag"]).Select(t=>new { X = t.Key, Y = t });
+        }
+
+        /// <summary>
+        /// 获取最近一次科目平均成绩
+        /// </summary>
+        /// <param name="department"></param>
+        /// <param name="Level"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public object GetLatesSubjectScore(string department,string Level)
+        {
+            DateTime? dateTime= personalscroceManager.CurrentDb.AsQueryable().OrderBy(t => t.AchieveDate, OrderByType.Desc).Select(t => t.AchieveDate).First();
+
+            return personalscroceManager.Db.Queryable<personalscroce, dicsubject, personalfiles>((t1, t2, t3) => t1.SubjectGuid == t2.Guid && t1.PGuid == t3.Guid).WhereIF(!string.IsNullOrEmpty(department), (t1, t2, t3) => t3.Department == department).WhereIF(!string.IsNullOrEmpty(Level), (t1, t2, t3) => t3.Level == Level).Where((t1, t2, t3) => t1.AchieveDate == dateTime).GroupBy((t1, t2, t3) => t2.SubjectName).Select((t1, t2, t3) => new { SubjectName = t2.SubjectName, Avg = SqlFunc.AggregateAvg((double)(t1.Score)) }).ToList();
         }
     }
 }

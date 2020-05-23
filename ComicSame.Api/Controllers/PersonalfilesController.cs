@@ -69,11 +69,12 @@ namespace ComicSame.Api.Controllers
         /// </summary>
         /// <param name="pageModel"></param>
         /// <param name="queryJson"></param>
+        /// <param name="orderby">排序信息，例如"field desc"</param>
         /// <returns></returns>
         [HttpGet]
-        public object GetPersonalList([FromUri]PageModel pageModel, string queryJson)
+        public object GetPersonalList([FromUri]PageModel pageModel, string queryJson, string orderby = null)
         {
-            var result = personalfilesManager.GetPageList(queryJson, pageModel);
+            var result = personalfilesManager.GetPageList(queryJson, pageModel, orderby);
 
             return new
             {
@@ -145,11 +146,6 @@ namespace ComicSame.Api.Controllers
                     {
                         if (row[0] == null || row[0].ToString() == "")
                             continue;
-                        if (index == 0)
-                        {
-                            index++;
-                            continue;
-                        }
                         try
                         {
                             personalfiles personalfiles = new personalfiles()
@@ -187,6 +183,7 @@ namespace ComicSame.Api.Controllers
                                 personalfiles.Guid = temp.Guid;
                                 lstUpdateFiles.Add(personalfiles);
                             }
+                            index++;
                         }
                         catch (Exception ex)
                         {
@@ -229,7 +226,7 @@ namespace ComicSame.Api.Controllers
         [HttpPost]
         public bool Delete(string guid)
         {
-            return personalfilesManager.Delete(guid);
+            return personalfilesManager.DeleteById(guid);
         }
 
         /// <summary>
@@ -251,6 +248,16 @@ namespace ComicSame.Api.Controllers
         public List<string> GetLevelByDepartment(string department)
         {
             return personalfilesManager.CurrentDb.AsQueryable().GroupBy(t => t.Level).Where(t => t.Department == department).Select(t => t.Level).ToList();
+        }
+
+        /// <summary>
+        /// 随机选取一个人员信息
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public personalfiles GetRandomPersonalfile()
+        {
+            return personalfilesManager.Db.Ado.SqlQuery<personalfiles>("select  *  from  personalfiles order by rand() limit 1").First();
         }
     }
 }

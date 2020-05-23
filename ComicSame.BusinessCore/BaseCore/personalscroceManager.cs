@@ -116,7 +116,7 @@ public class personalscroceManager : DbContext<personalscroce>
     /// <param name="dateBegin"></param>
     /// <param name="dateEnd"></param>
     /// <returns></returns>
-    public List<personalscroce> GetPagePersonalscroces(PageModel pageModel,string department, string name, string pid, string subject, DateTime? dateBegin, DateTime? dateEnd)
+    public List<personalscroce> GetPagePersonalscroces(PageModel pageModel, string department, string name, string pid, string subject, DateTime? dateBegin, DateTime? dateEnd, string orderby = null)
     {
         var expression = LinqExpression.True<personalscroce>();
         List<IConditionalModel> conModels = new List<IConditionalModel>();
@@ -200,7 +200,8 @@ public class personalscroceManager : DbContext<personalscroce>
             expression = expression.And(t => t.AchieveDate.Value >= dateEnd);
         }
         int pageCount = 0;
-        var result= Db.Queryable<personalscroce, personalfiles, dicsubject>((t1, t2, t3) => t1.PGuid == t2.Guid && t3.Guid == t1.SubjectGuid).Where(conModels).OrderBy((t1, t2, t3) => new { t2.Name, t1.AchieveDate }, OrderByType.Asc).Select((t1, t2, t3) => new personalscroce { AchieveDate = t1.AchieveDate, Guid = t1.Guid, PGuid = t1.PGuid, Subject = t3.SubjectName, Score = t1.Score, SubjectType = t3.SubType, Name = t2.Name, SubjectGuid = t3.Guid, Department = t2.Department, Duty = t2.Duty }).ToPageList(pageModel.PageIndex,pageModel.PageSize,ref pageCount);
+        bool isorder = !string.IsNullOrEmpty(orderby);
+        var result = Db.Queryable<personalscroce, personalfiles, dicsubject>((t1, t2, t3) => t1.PGuid == t2.Guid && t3.Guid == t1.SubjectGuid).Where(conModels).OrderByIF(isorder, orderby).Select((t1, t2, t3) => new personalscroce { AchieveDate = t1.AchieveDate, Guid = t1.Guid, PGuid = t1.PGuid, Subject = t3.SubjectName, Score = t1.Score, SubjectType = t3.SubType, Name = t2.Name, SubjectGuid = t3.Guid, Department = t2.Department, Duty = t2.Duty }).ToPageList(pageModel.PageIndex, pageModel.PageSize, ref pageCount);
         pageModel.PageCount = pageCount;
         return result;
     }

@@ -72,7 +72,7 @@ public class DbContext<T> where T : class, new()
         return CurrentDb.GetPageList(conditionalModels, pageModel);
     }
 
-    public virtual List<T> GetPageList(string queryJson, PageModel pageModel)
+    public virtual List<T> GetPageList(string queryJson,PageModel pageModel,string orderby=null)
     {
         List<IConditionalModel> conditionalModels = new List<IConditionalModel>();
         if (!string.IsNullOrEmpty(queryJson))
@@ -93,7 +93,11 @@ public class DbContext<T> where T : class, new()
                 }
             }
         }
-        return GetPageList(conditionalModels, pageModel);
+        int total = 0;
+        bool isorderby = !string.IsNullOrEmpty(orderby);
+        var result = CurrentDb.AsQueryable().Where(conditionalModels).OrderByIF(isorderby,orderby).ToPageList(pageModel.PageIndex, pageModel.PageSize, ref total);
+        pageModel.PageCount = total;
+        return result;
     }
 
     /// <summary>
@@ -124,9 +128,9 @@ public class DbContext<T> where T : class, new()
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    public virtual bool Delete(dynamic id)
+    public virtual bool DeleteById(string id)
     {
-        return CurrentDb.Delete(id);
+        return CurrentDb.DeleteById(id);
     }
 
 

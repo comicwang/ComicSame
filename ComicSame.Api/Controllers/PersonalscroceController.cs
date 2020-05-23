@@ -125,11 +125,12 @@ namespace ComicSame.Api.Controllers
         /// <param name="department"></param>
         /// <param name="name"></param>
         /// <param name="pid"></param>
+        /// <param name="orderby">排序信息</param>
         /// <returns></returns>
         [HttpGet]
-        public object GetPageScroces([FromUri]PageModel pageModel,string subject, DateTime? dateBegin, DateTime? dateEnd, string department = null, string name = null, string pid = null)
+        public object GetPageScroces([FromUri]PageModel pageModel,string subject, DateTime? dateBegin, DateTime? dateEnd, string department = null, string name = null, string pid = null,string orderby=null)
         {
-            var result= personalscroceManager.GetPagePersonalscroces(pageModel,department, name, pid, subject, dateBegin, dateEnd);
+            var result= personalscroceManager.GetPagePersonalscroces(pageModel,department, name, pid, subject, dateBegin, dateEnd,orderby);
             return new
             {
                 data = result,
@@ -155,7 +156,18 @@ namespace ComicSame.Api.Controllers
         [HttpPost]
         public bool Delete(string guid)
         {
-            return personalscroceManager.Delete(guid);
+            return personalscroceManager.DeleteById(guid);
+        }
+
+        /// <summary>
+        /// 根据主键查询分数
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public personalscroce GetById(string guid)
+        {
+            return personalscroceManager.Db.Queryable<personalscroce, personalfiles>((t1, t2) => t1.PGuid == t2.Guid).Where(t1 => t1.Guid == guid).Select((t1, t2) => new personalscroce() { Guid = t1.Guid, PGuid = t1.PGuid, Name = t2.Name, AchieveDate = t1.AchieveDate, Subject = t1.Subject, SubjectGuid = t1.SubjectGuid, SubjectType = t1.SubjectType, Score = t1.Score }).First();
         }
 
         /// <summary>

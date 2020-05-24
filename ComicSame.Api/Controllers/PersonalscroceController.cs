@@ -208,6 +208,7 @@ namespace ComicSame.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
         public object ImportPersonalScoreExcel()
         {
             string Message = string.Empty;

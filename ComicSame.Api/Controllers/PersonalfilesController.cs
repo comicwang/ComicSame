@@ -120,6 +120,7 @@ namespace ComicSame.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
+        [AllowAnonymous]
         public object ImportPersonalfileExcel()
         {
             string Message = string.Empty;
@@ -236,7 +237,7 @@ namespace ComicSame.Api.Controllers
         [HttpGet]
         public List<string> GetDepartList()
         {
-           return personalfilesManager.CurrentDb.AsQueryable().GroupBy(t => t.Department).Select(t => t.Department).ToList();
+           return personalfilesManager.CurrentDb.AsQueryable().GroupBy(t => t.Department).OrderBy(t=>t.Department).Select(t => t.Department).ToList();
         }
 
         /// <summary>
@@ -247,7 +248,7 @@ namespace ComicSame.Api.Controllers
         [HttpGet]
         public List<string> GetLevelByDepartment(string department)
         {
-            return personalfilesManager.CurrentDb.AsQueryable().GroupBy(t => t.Level).Where(t => t.Department == department).Select(t => t.Level).ToList();
+            return personalfilesManager.CurrentDb.AsQueryable().GroupBy(t => t.Level).Where(t => t.Department == department).OrderBy(t=>t.Level).Select(t => t.Level).ToList();
         }
 
         /// <summary>

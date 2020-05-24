@@ -113,7 +113,7 @@ namespace ComicSame.Api.Controllers
 
             return new 
             { 
-                data=jArray,
+                data=jArray.OrderBy(t=>t["SubjectType"]).ToList(),
                 power=Math.Round(power,1),
                 speed =Math.Round(speed,1),
                 sensitivity =Math.Round(sensitivity,1),
